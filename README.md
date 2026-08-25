@@ -1,6 +1,77 @@
-![Downloads](https://img.shields.io/github/downloads/Slava-Shchipunov/awg-openwrt/total.svg)
+![Downloads](https://img.shields.io/github/downloads/koshelevnv/awg-openwrt/total.svg)
 
 # Пакеты amneziawg для роутеров с прошивкой OpenWRT
+
+> ## 🔶 Форк с поддержкой AmneziaWG 3.1
+>
+> Это форк [Slava-Shchipunov/awg-openwrt](https://github.com/Slava-Shchipunov/awg-openwrt), обновлённый до **AmneziaWG 3.1** (апстрим-тег `v3.1.20260812`). В исходном репозитории на момент форка была версия 2.0 — запрос на 3.0 висел в [issue #161](https://github.com/Slava-Shchipunov/awg-openwrt/issues/161) без ответа.
+>
+> **Что нового в 3.x:** шифрование заголовков пакетов (`HeaderProtectionKey`), случайный «хвост» произвольной длины у каждого пакета (`ContentPaddingAddition`, `RandomTrailers`), отказ отвечать на cookie-зонды (`DisableCookies`) и рандомизация таймеров хендшейка.
+>
+> ### Что изменено относительно апстрима
+>
+> | Что | Как |
+> |---|---|
+> | `kmod-amneziawg` | версия поднята до `3.1.20260812` |
+> | `amneziawg-tools` | версия поднята до `3.1.20260812`, убран суффикс `-2` в `PKG_SOURCE_VERSION` |
+> | `files/amneziawg.sh` | proto-скрипт netifd научен девяти новым опциям 3.x |
+> | `luci-proto-amneziawg` | **веб-интерфейс научен 3.1**, версия `3.1.0` |
+> | `amneziawg-install.sh` | `BASE_URL` переключён на этот форк |
+> | `build-module.yml` | добавлен `permissions: contents: write` — без него сборка в форке не может создать релиз |
+>
+> Самое заметное — **починен импорт конфигов в LuCI**. Форма версии 2.0.4 отвергала конфиги 3.1 с ошибкой `Cannot parse configuration: PersistentKeepAlive setting is invalid`, потому что её JS-валидатор не понимал диапазонов вида `25-35` (сам `awg` их разбирает штатно). Хуже того, даже при исправленном keepalive форма молча выбрасывала все незнакомые ей параметры 3.1 и создавала нерабочую секцию. Теперь все девять параметров есть в форме, переносятся при импорте и попадают в экспорт с QR-кодом.
+>
+> ### Обратная совместимость
+>
+> Конфиги AmneziaWG 2.0 продолжают работать: все возможности 3.x включаются только явным заданием параметров, а новые таймеры при отсутствии значения откатываются на штатные константы WireGuard. Параметры хранятся в `struct wg_device`, поэтому **туннели 2.0 и 3.1 спокойно сосуществуют на одном роутере** — проверено на Cudy WR3000P (OpenWrt 25.12.5): два туннеля 2.0 и один 3.1 одновременно.
+>
+> ### ⚠️ Какие пакеты здесь собраны
+>
+> В отличие от исходного репозитория, здесь **нет сборок под все платформы**. В релизе [v25.12.5](https://github.com/koshelevnv/awg-openwrt/releases/tag/v25.12.5) лежат пакеты только для **OpenWrt 25.12.5, `aarch64_cortex-a53`, `mediatek/filogic`**. Под своё устройство соберите сами — Actions → «Create Release on Tag» → Run workflow, указав версию OpenWrt, target и subtarget (это занимает около получаса).
+>
+> ### Установка
+>
+> ```
+> sh <(wget -O - https://raw.githubusercontent.com/koshelevnv/awg-openwrt/refs/heads/master/amneziawg-install.sh)
+> ```
+>
+> ### 🧪 На каком оборудовании тестировалось
+>
+> | | |
+> |---|---|
+> | Роутер | Cudy WR3000P v1 (`cudy,wr3000p-v1`) |
+> | SoC | MediaTek, ARMv8 Processor rev 4 |
+> | Прошивка | OpenWrt 25.12.5 `r33051-f5dae5ece4` |
+> | Ядро | 6.12.94 (`vermagic: 6.12.94 SMP mod_unload aarch64`) |
+> | Архитектура | `aarch64_cortex-a53` |
+> | Target | `mediatek/filogic` |
+> | ROM | UBIFS overlay 44 МБ, после установки занято 26 МБ |
+>
+> Установленные пакеты этого форка:
+>
+> ```
+> kmod-amneziawg        6.12.94.3.1.20260812-r1
+> amneziawg-tools       3.1.20260812-r1
+> luci-proto-amneziawg  3.1.0-r1
+> ```
+>
+> **Что именно проверено:**
+>
+> - обновление поверх рабочей установки AWG 2.0 — два существующих туннеля 2.0 после перезагрузки поднялись без правок конфигов, хендшейк проходит, трафик идёт;
+> - три туннеля одновременно: два на 2.0 (Германия, Швеция) и один на 3.1 (Казахстан), конфликтов нет;
+> - импорт конфига 3.1 через LuCI со всеми параметрами (`HeaderProtectionKey`, `ContentPaddingAddition = 10-100`, `RandomTrailers = on`, `DisableCookies = on`, таймеры-диапазоны, `PersistentKeepalive = 25-35`) — записывается в uci полностью;
+> - сквозная проверка выхода: внешний IP и геолокация соответствуют серверу 3.1;
+> - совместная работа с [podkop](https://podkop.net) 0.7.22 (sing-box, `bind_interface`) — маршрутизация не сломалась.
+>
+> Другие платформы не проверялись — пакеты под них здесь не собраны.
+>
+> ### Авторство изменений
+>
+> Обновление до 3.1 выполнено [@koshelevnv](https://github.com/koshelevnv) совместно с [Claude](https://claude.com/claude-code) (Anthropic) — 25 августа 2026. Правки исходников, патч LuCI и сборку делал Claude по постановке задачи и под проверкой @koshelevnv; тестирование на живом роутере — @koshelevnv.
+>
+> Вся основная работа — сборочный пайплайн, Makefile-ы, install-скрипт, package feed — принадлежит [@Slava-Shchipunov](https://github.com/Slava-Shchipunov) и авторам, перечисленным в благодарностях ниже. Подробности изменений — в [CHANGELOG.md](CHANGELOG.md).
+>
+> ---
 
 ## Custom package feed (GitHub Pages)
 
@@ -8,6 +79,8 @@
 для apk на OpenWrt 25.x и новее.
 
 [Подробная документация](docs/custom-feed.md)
+
+> ⚠️ Ссылка на feed ведёт на **исходный** репозиторий — там пакеты версии 2.0. В этом форке GitHub Pages не публикуются: ставьте пакеты из [релизов форка](https://github.com/koshelevnv/awg-openwrt/releases) или скриптом установки выше.
 
 ## Автоматическая настройка AmneziaWG для OpenWRT версии 23.05.0 и более новых
 
@@ -17,13 +90,13 @@
    Для запуска скрипта подключитесь к роутеру по SSH, введите команду и следуйте инструкциям на экране:
 
 ```
-sh <(wget -O - https://raw.githubusercontent.com/Slava-Shchipunov/awg-openwrt/refs/heads/master/amneziawg-install.sh)
+sh <(wget -O - https://raw.githubusercontent.com/koshelevnv/awg-openwrt/refs/heads/master/amneziawg-install.sh)
 ```
 
 3. Также предусмотрен неинтерактивный режим простой установки пакетов (без вопросов о настройке интерфейса с протоколом AmneziaWG и установке пакета `luci-i18n-amneziawg-ru`):
 
 ```
-sh <(wget -O - https://raw.githubusercontent.com/Slava-Shchipunov/awg-openwrt/refs/heads/master/amneziawg-install.sh) -en
+sh <(wget -O - https://raw.githubusercontent.com/koshelevnv/awg-openwrt/refs/heads/master/amneziawg-install.sh) -en
 ```
 
 4. Кроме того для автоматической настройки также можно использовать [скрипт](https://github.com/itdoginfo/domain-routing-openwrt) от пользователя [@itdoginfo](https://github.com/itdoginfo). Этот скрипт позволяет автоматически скачать нужные пакеты из собранных здесь и настроить [точечный обход блокировок по доменам](https://habr.com/ru/articles/767464/). Подойдёт, если у вас слабый роутер с недостаточным объёмом ROM для установки podkop-a и зависимостей
@@ -105,13 +178,13 @@ AWG 2.0 можно собрать под определённую платфор
    To run the script, connect to the router via SSH, enter the command and follow the instructions on the screen:
 
 ```
-sh <(wget -O - https://raw.githubusercontent.com/Slava-Shchipunov/awg-openwrt/refs/heads/master/amneziawg-install.sh)
+sh <(wget -O - https://raw.githubusercontent.com/koshelevnv/awg-openwrt/refs/heads/master/amneziawg-install.sh)
 ```
 
 3. There is also a non-interactive mode for simple package installation (without questions about configuring an interface with the AmneziaWG protocol and installing the `luci-i18n-amneziawg-ru` package):
 
 ```
-sh <(wget -O - https://raw.githubusercontent.com/Slava-Shchipunov/awg-openwrt/refs/heads/master/amneziawg-install.sh) -en
+sh <(wget -O - https://raw.githubusercontent.com/koshelevnv/awg-openwrt/refs/heads/master/amneziawg-install.sh) -en
 ```
 
 4. In addition, for automatic configuration you can also use the [script](https://github.com/itdoginfo/domain-routing-openwrt) from user [@itdoginfo](https://github.com/itdoginfo). This script allows you to automatically download the necessary packages from those collected here and configure [point-by-point bypass of blocking by domains](https://habr.com/ru/articles/767464/) (instructions in Russian). Suitable if you have a weak router with insufficient ROM to install podkop and its dependencies
