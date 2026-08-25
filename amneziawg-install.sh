@@ -151,6 +151,13 @@ install_awg_packages() {
         LUCI_PACKAGE_NAME="luci-app-amneziawg"
     fi
 
+
+    # В этом форке собираются пакеты AWG 3.1. Ветка выше нужна только для выбора
+    # имени LuCI-пакета (luci-proto-amneziawg против старого luci-app-amneziawg).
+    if [ "$AWG_VERSION" = "2.0" ]; then
+        AWG_VERSION="3.1"
+    fi
+
     printf "\033[32;1mDetected AWG version: $AWG_VERSION\033[0m\n"
 
     AWG_DIR="/tmp/amneziawg"
