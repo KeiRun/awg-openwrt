@@ -32,28 +32,18 @@
 > ### Установка
 >
 > ```
-> sh <(wget -O - https://raw.githubusercontent.com/koshelevnv/awg-openwrt/refs/heads/master/amneziawg-install.sh)
+> sh <(wget -O - https://raw.githubusercontent.com/KeiRun/awg-openwrt/main/amneziawg-install.sh)
 > ```
 >
-> ### 🧪 На каком оборудовании тестировалось
+> ### 🧪 На каком оборудовании тестировалось [@KeiRun](https://github.com/KeiRun)
 >
 > | | |
 > |---|---|
-> | Роутер | Cudy WR3000P v1 (`cudy,wr3000p-v1`) |
+> | Роутер | AX3000T |
 > | SoC | MediaTek, ARMv8 Processor rev 4 |
-> | Прошивка | OpenWrt 25.12.5 `r33051-f5dae5ece4` |
-> | Ядро | 6.12.94 (`vermagic: 6.12.94 SMP mod_unload aarch64`) |
+> | Прошивка | OpenWrt 24.10.1|
 > | Архитектура | `aarch64_cortex-a53` |
 > | Target | `mediatek/filogic` |
-> | ROM | UBIFS overlay 44 МБ, после установки занято 26 МБ |
->
-> Установленные пакеты этого форка:
->
-> ```
-> kmod-amneziawg        6.12.94.3.1.20260812-r1
-> amneziawg-tools       3.1.20260812-r1
-> luci-proto-amneziawg  3.1.0-r1
-> ```
 >
 > **Что именно проверено:**
 >
@@ -68,9 +58,33 @@
 > ### Авторство изменений
 >
 > Обновление до 3.1 выполнено [@koshelevnv](https://github.com/koshelevnv) совместно с [Claude](https://claude.com/claude-code) (Anthropic) — 25 августа 2026. Правки исходников, патч LuCI и сборку делал Claude по постановке задачи и под проверкой @koshelevnv; тестирование на живом роутере — @koshelevnv.
+> Сборка пакетов с релиза 23.05.0 по 25.12.5 выполнена [@KeiRun](https://github.com/KeiRun) используя наработки [@koshelevnv](https://github.com/koshelevnv) 
 >
 > Вся основная работа — сборочный пайплайн, Makefile-ы, install-скрипт, package feed — принадлежит [@Slava-Shchipunov](https://github.com/Slava-Shchipunov) и авторам, перечисленным в благодарностях ниже. Подробности изменений — в [CHANGELOG.md](CHANGELOG.md).
 >
+> 1.  AWG-3.1 [23.05.0](https://github.com/KeiRun/awg-openwrt/releases/tag/v23.05.0)
+> 2.  AWG-3.1 [23.05.1](https://github.com/KeiRun/awg-openwrt/releases/tag/v23.05.1)
+> 3.  AWG-3.1 [23.05.2](https://github.com/KeiRun/awg-openwrt/releases/tag/v23.05.2)
+> 4.  AWG-3.1 [23.05.3](https://github.com/KeiRun/awg-openwrt/releases/tag/v23.05.3)
+> 5.  AWG-3.1 [23.05.4](https://github.com/KeiRun/awg-openwrt/releases/tag/v23.05.4)
+> 6.  AWG-3.1 [23.05.5](https://github.com/KeiRun/awg-openwrt/releases/tag/v23.05.5)
+> 7.  AWG-3.1 [23.05.6](https://github.com/KeiRun/awg-openwrt/releases/tag/v23.05.6)
+> 8.  AWG-3.1 [24.10.0](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.0) 
+> 9.  AWG-3.1 [24.10.1](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.1)
+> 10. AWG-3.1 [24.10.2](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.2)
+> 11. AWG-3.1 [24.10.3](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.3)
+> 12. AWG-3.1 [24.10.4](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.4)
+> 13. AWG-3.1 [24.10.5](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.5)
+> 14. AWG-3.1 [24.10.6](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.6)
+> 14. AWG-3.1 [24.10.7](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.7)
+> 14. AWG-3.1 [24.10.8](https://github.com/KeiRun/awg-openwrt/releases/tag/v24.10.8)
+> 16. AWG-3.1 [25.12.0](https://github.com/KeiRun/awg-openwrt/releases/tag/v25.12.0)
+> 17. AWG-3.1 [25.12.1](https://github.com/KeiRun/awg-openwrt/releases/tag/v25.12.1)
+> 18. AWG-3.1 [25.12.2](https://github.com/KeiRun/awg-openwrt/releases/tag/v25.12.2)
+> 19. AWG-3.1 [25.12.3](https://github.com/KeiRun/awg-openwrt/releases/tag/v25.12.3)
+> 20. AWG-3.1 [25.12.4](https://github.com/KeiRun/awg-openwrt/releases/tag/v25.12.4)
+> 21. AWG-3.1 [25.12.5](https://github.com/KeiRun/awg-openwrt/releases/tag/v25.12.5)
+> 
 > ---
 
 ## Custom package feed (GitHub Pages)
