@@ -32,7 +32,7 @@
 > ### Установка
 >
 > ```
-> sh <(wget -O - https://raw.githubusercontent.com/KeiRun/awg-openwrt/main/amneziawg-install.sh)
+> sh <(wget -O - https://raw.githubusercontent.com/keirun/awg-openwrt/main/amneziawg-install.sh)
 > ```
 >
 > ### 🧪 На каком оборудовании тестировалось [@KeiRun](https://github.com/KeiRun)
